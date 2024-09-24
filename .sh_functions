@@ -1,0 +1,31 @@
+# List all files in passed search path sorted by modification time.
+find_files_modified()
+{
+	SEARCH_PATH="."
+	[ -n "$1" ] && SEARCH_PATH="$1"
+	if [ "$OS" = "Darwin" ]; then
+		find "$SEARCH_PATH" -type f -exec stat -f "%Sm %N" -t '%Y-%m-%d' {} + \
+    	| sort \
+    	| grep --color=auto -E '[^/]+$'
+	elif [ "$OS" = "Linux" ]; then
+		find "$SEARCH_PATH" -type f -printf '%TY-%Tm-%Td %p\n' \
+		| sort \
+		| grep --color=auto -E '[^/]+$'
+	else
+		return 1
+	fi
+}
+
+# Colors
+color_demo()
+{
+        echo "${BLACK}BLACK${BOLD}   BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${RED}RED${BOLD}     BOLD ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${GREEN}GREEN ${BOLD}  BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${YELLOW}YELLOW ${BOLD} BOLD      ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${BLUE}BLUE ${BOLD}   BOLD        ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${MAGENTA}MAGENTA ${BOLD}BOLD     ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${CYAN}CYAN ${BOLD}   BOLD        ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${WHITE}WHITE ${BOLD}  BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${NORMAL}"
+}
