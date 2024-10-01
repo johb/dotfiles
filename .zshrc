@@ -10,19 +10,15 @@ OS=$(uname)
 
 if [ "$OS" = "Darwin" ]; then
 	# Homebrew
-	if [ -d "/opt/homebrew" ]; then	
-		PATH=$PATH:/opt/homebrew/bin
-	fi
+	[ -d "/opt/homebrew" ] && PATH="$PATH":/opt/homebrew/bin
 
 	# MacPorts
-	if [ -d "/opt/local/bin" ]; then
-		PATH=$PATH:/opt/local/bin
-	fi
+	[ -d "/opt/local/bin" ] && PATH="$PATH":/opt/local/bin
+	# local installation
+	[ -d "$HOME/ports" ] && PATH="$PATH":"$HOME"/ports/bin
 
 	# Local docker installation
-	if [ -d "${HOME}/.docker/bin" ]; then
-		PATH=$PATH:${HOME}/.docker/bin
-	fi
+	[ -d "$HOME/.docker/bin" ] && PATH="$PATH":"$HOME"/.docker/bin
 
 	# Open man page in Preview app.
 	function man_preview(){
@@ -42,9 +38,7 @@ if [ "$OS" = "Darwin" ]; then
 	}
 fi
 
-if [ -d "$HOME/bin" ]; then
-	PATH=$PATH:$HOME/bin
-fi
+[ -d "$HOME/bin" ] && PATH="$PATH":"$HOME/bin"
 
 # VIM key bindings
 bindkey -e		
