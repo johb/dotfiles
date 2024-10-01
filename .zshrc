@@ -101,7 +101,7 @@ alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # Functions
 # ----------------------------------------------------------------------------
 # POSIX/ Bourne Shell compatible
-[ -h "$HOME"/.sh_functions ] && . "$HOME"/.sh_functions
+[ -f "$HOME"/.sh_functions ] && . "$HOME"/.sh_functions
 
 # zsh specific functions
 
