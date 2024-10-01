@@ -27,7 +27,7 @@ if [ "$OS" = "Darwin" ]; then
 	&& alias code='/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
 
 	[ -f "${HOME}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
-	&& alias code='${HOME}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
+	&& alias code='${HOME}/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
 # ... Linux
 #elif [ "$OS" = "Linux" ]; then
 
