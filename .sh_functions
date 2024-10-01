@@ -29,3 +29,13 @@ color_demo()
         echo "${WHITE}WHITE ${BOLD}  BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
         echo "${NORMAL}"
 }
+
+# Generate random passwords
+gen_password()
+{
+	local length=12
+	[ -n "$1" ] && length="$1"
+	pass=$(LC_ALL=C tr -dc 'A-Za-z0-9!?$%&/=():' < /dev/random | head -c "$length")
+	echo "$pass"
+}
+
