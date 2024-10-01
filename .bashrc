@@ -13,34 +13,15 @@ if command -v vim >/dev/null 2>&1; then
 elif command -v vi >/dev/null 2>&1; then
 	export VISUAL=vi
 fi
-
-# ----------------------------------------------------------------------------
-# Aliases
-# ----------------------------------------------------------------------------
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-alias grep='grep --color=auto'
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # ----------------------------------------------------------------------------
 # Env
 # ----------------------------------------------------------------------------
-BLACK=$(tput setaf 0)
-RED=$(tput setaf 1)
-GREEN=$(tput setaf 2)
-YELLOW=$(tput setaf 3)
-BLUE=$(tput setaf 4)
-MAGENTA=$(tput setaf 5)
-CYAN=$(tput setaf 6)
-WHITE=$(tput setaf 7)
-BOLD=$(tput bold)
-NORMAL=$(tput sgr0)
-UNDERLINE=$(tput smul)
+
 # ----------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------
 # POSIX/ Bourne Shell compliant
-[ -f "$HOME"/.sh_functions ] && . "$HOME"/.sh_functions
+[ -f "${HOME}/.sh_functions" ] && . "${HOME}/.sh_functions"
 
 # Bash specific functions
 
