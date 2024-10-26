@@ -15,6 +15,18 @@ set ic
 " Only whitespace after end of document, no ~
 set fillchars=vert:\ ,eob:\  
 " ----------------------------------------------------------------------------
+" Keybindings
+" ----------------------------------------------------------------------------
+" Remap leader to ;
+let mapleader=","
+" hlsearch off with <leader>l
+nnoremap <leader>l :nohlsearch<CR>
+" Movement in insert mode with <Ctrl>-h,j,k,l
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
+" ----------------------------------------------------------------------------
 " Indentation Settings
 " ----------------------------------------------------------------------------
 " Set tab width to 4 spaces
