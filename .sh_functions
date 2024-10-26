@@ -28,6 +28,7 @@ if [ "$OS" = "Darwin" ]; then
 
 	[ -f "${HOME}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
 	&& alias code='${HOME}/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+	alias desktop-logout='launchctl bootout user/$(id -u)'
 # ... Linux
 #elif [ "$OS" = "Linux" ]; then
 
