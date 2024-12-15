@@ -3,46 +3,8 @@
 export EDITOR="vim"
 export VISUAL="vim"
 
-# ----------------------------------------------------------------------------
-# Path
-# ----------------------------------------------------------------------------
-OS=$(uname)
-
-if [ "$OS" = "Darwin" ]; then
-	# Homebrew
-	[ -d "/opt/homebrew" ] && PATH="$PATH":/opt/homebrew/bin
-
-	# MacPorts
-	[ -d "/opt/local/bin" ] && PATH="$PATH":/opt/local/bin
-	# local installation
-	[ -d "$HOME/ports" ] && PATH="$PATH":"$HOME"/ports/bin
-
-	# Local docker installation
-	[ -d "$HOME/.docker/bin" ] && PATH="$PATH":"$HOME"/.docker/bin
-
-	# Open man page in Preview app.
-	function man_preview(){
-		mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
-	}
-
-	# Open man page in separate yellow terminal window.
-	function xman(){
-		# If more than one arg, then assume the first arg is the section.
-		if [ ! -z "$2" ]; then
-			section="$1"
-			shift
-			open x-man-page://$section/$@
-		else
-			open x-man-page://$@
-		fi
-	}
-fi
-
-[ -d "$HOME/bin" ] && PATH="$PATH":"$HOME/bin"
-
 # VIM key bindings
 bindkey -e		
-
 # ----------------------------------------------------------------------------
 # Completion
 # ----------------------------------------------------------------------------
@@ -65,7 +27,6 @@ zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
-
 # ----------------------------------------------------------------------------
 # History
 # ----------------------------------------------------------------------------
@@ -88,15 +49,6 @@ local returncode="%(?..%F{red} %? ↵%f)"
 #PS1='%B%F%n@%m%f:%F{red}%1~%b%f %(!.#.$) '
 PS1='%n@%m%f:%F{red}%1~%b%f %(!.#.$) '
 RPROMPT="$returncode"
-
-# ----------------------------------------------------------------------------
-# Aliases
-# ----------------------------------------------------------------------------
-alias ls="ls --color=always"
-alias ll="ls --color=always -oh"
-alias la="ls --color=always -oha"
-alias tree="tree -C"
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # ----------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------

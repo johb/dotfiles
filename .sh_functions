@@ -1,17 +1,86 @@
-# === Helper functions
-# fail [EXIT_CODE] [ERROR_MESSAGE], default fail 1 ""
-fail()
-{
-	if [ -n "$2" ]; then
-		echo "$2"
-	fi
-	if [ -n "$1" ]; then
-		return "$1"
-	else
-		return 1
-	fi
-}
-# === /Helper Functions
+OS="$(uname)"
+# ----------------------------------------------------------------------------
+# PATH
+# ----------------------------------------------------------------------------
+# ... macOS
+if [ "$OS" = "Darwin" ]; then
+	# Homebrew
+	[ -d "/opt/homebrew" ] && PATH="$PATH":/opt/homebrew/bin
+	# MacPorts
+	[ -d "/opt/local/bin" ] && PATH="$PATH":/opt/local/bin
+	# local MacPorts installation
+	[ -d "$HOME/ports" ] && PATH="$PATH":"${HOME}/ports/bin"
+	# Local docker installation
+	[ -d "$HOME/.docker/bin" ] && PATH="$PATH":"${HOME}/.docker/bin"
+# ... Linux
+#elif [ "$OS" = "Linux" ]; then
+	
+fi
+
+[ -d "${HOME}/bin" ] && PATH="$PATH":"${HOME}/bin"
+# ----------------------------------------------------------------------------
+# Aliases
+# ----------------------------------------------------------------------------
+# ... macOS
+if [ "$OS" = "Darwin" ]; then
+	[ -f "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
+	&& alias code='/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
+
+	[ -f "${HOME}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
+	&& alias code='${HOME}/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+	alias desktop-logout='launchctl bootout user/$(id -u)'
+# ... Linux
+#elif [ "$OS" = "Linux" ]; then
+
+fi
+
+# OS independent
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias grep='grep --color=auto'
+alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+# ----------------------------------------------------------------------------
+# Colors
+# ----------------------------------------------------------------------------
+BLACK=$(tput setaf 0)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+WHITE=$(tput setaf 7)
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+UNDERLINE=$(tput smul)
+# ----------------------------------------------------------------------------
+# Functions
+# ----------------------------------------------------------------------------
+# ... macOS
+if [ "$OS" = "Darwin" ]; then
+
+	# Open man page in Preview app.
+	function man_preview(){
+		mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
+	}
+
+	# Open man page in separate yellow terminal window.
+	function xman(){
+		# If more than one arg, then assume the first arg is the section.
+		if [ ! -z "$2" ]; then
+			section="$1"
+			shift
+			open x-man-page://$section/$@
+		else
+			open x-man-page://$@
+		fi
+	}
+# ... Linux
+#elif [ "$OS" = "Linux" ]; then
+
+fi
+
 # List all files in passed search path sorted by modification time.
 find_files_modified()
 {
