@@ -40,6 +40,7 @@ UNDERLINE=$(tput smul)
 # Functions
 # ----------------------------------------------------------------------------
 # POSIX/ Bourne Shell compliant
+[ -f "$HOME"/.secrets ] && . "$HOME"/.secrets
 [ -f "$HOME"/.sh_functions ] && . "$HOME"/.sh_functions
 
 # Bash specific functions

@@ -1,3 +1,17 @@
+# === Helper functions
+# fail [EXIT_CODE] [ERROR_MESSAGE], default fail 1 ""
+fail()
+{
+	if [ -n "$2" ]; then
+		echo "$2"
+	fi
+	if [ -n "$1" ]; then
+		return "$1"
+	else
+		return 1
+	fi
+}
+# === /Helper Functions
 # List all files in passed search path sorted by modification time.
 find_files_modified()
 {
@@ -39,3 +53,36 @@ gen_password()
 	echo "$pass"
 }
 
+# Recursivly set file mode to sane and private (750 directories, 640 files).
+repair_filemod()
+{
+	CWD="$(pwd)"
+	echo "cwd: ${CWD}, setting all directories to 750 and all files to 640? (y/N)"
+	read RESPONSE
+	if [ "$RESPONSE" = "y" ]; then
+		find "$CWD" -type d -exec chmod 750 {} \;
+		find "$CWD" -type f -exec chmod 640 {} \;
+	else
+		echo "NO"
+	fi
+}
+
+lsssh()
+{
+	# List all hosts defined in $HOME/.ssh/config
+	if [ -f "$HOME"/.ssh/config ]; then
+		grep '^[^[:space:]#]' "$HOME"/.ssh/config \
+		| tr -s '[:space:]' \
+		| cut -d" " -f2
+	fi
+}
+
+pushover()
+{
+	curl -s \
+		--form-string "token=${PUSHOVER_TOKEN}" \
+		--form-string "user=${PUSHOVER_USERKEY}" \
+		--form-string "message=$1" \
+		https://api.pushover.net/1/messages.json
+	return "$?"
+}
