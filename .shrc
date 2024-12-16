@@ -10,19 +10,21 @@ OS="$(uname)"
 # ... macOS
 if [ "$OS" = "Darwin" ]; then
 	# Homebrew
-	[ -d "/opt/homebrew" ] && PATH="$PATH":/opt/homebrew/bin
+	[ -d /opt/homebrew ] && PATH="$PATH":/opt/homebrew/bin
 	# MacPorts
-	[ -d "/opt/local/bin" ] && PATH="$PATH":/opt/local/bin
+	[ -d /opt/local/bin ] && PATH="$PATH":/opt/local/bin
 	# local MacPorts installation
-	[ -d "$HOME/ports" ] && PATH="$PATH":"${HOME}/ports/bin"
+	[ -d "$HOME"/ports ] && PATH="$PATH":"$HOME"/ports/bin
 	# Local docker installation
-	[ -d "$HOME/.docker/bin" ] && PATH="$PATH":"${HOME}/.docker/bin"
+	[ -d "$HOME"/.docker/bin ] && PATH="$PATH":"$HOME"/.docker/bin
+	# Local, self compiled applications
+	[ -d "$HOME"/usr/bin ] && PATH="$PATH":"$HOME"/usr/bin
 # ... Linux
 #elif [ "$OS" = "Linux" ]; then
 	
 fi
 
-[ -d "${HOME}/bin" ] && PATH="$PATH":"${HOME}/bin"
+[ -d "$HOME"/bin ] && PATH="$PATH":"$HOME"/bin
 # ----------------------------------------------------------------------------
 # Aliases
 # ----------------------------------------------------------------------------
