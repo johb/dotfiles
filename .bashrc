@@ -6,13 +6,11 @@ case $- in
       *) return;;
 esac
 
-PATH=$PATH:~/bin
-
-if command -v vim >/dev/null 2>&1; then
-	export VISUAL=vim
-elif command -v vi >/dev/null 2>&1; then
-	export VISUAL=vi
+if type vim > /dev/null 2>&1; then
+	export EDITOR="vim"
+	export VISUAL="vim"
 fi
+
 
 # === SSH agent
 SSH_AGENT_ENV="$HOME"/.ssh/agent.env
@@ -53,7 +51,7 @@ unset SSH_AGENT_ENV
 # ----------------------------------------------------------------------------
 # POSIX/ Bourne Shell compliant
 [ -f "$HOME"/.secrets ] && . "$HOME"/.secrets
-[ -f "$HOME"/.sh_functions ] && . "$HOME"/.sh_functions
+[ -f "$HOME"/.shrc ] && . "$HOME"/.shrc
 
 # Bash specific functions
 

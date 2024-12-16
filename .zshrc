@@ -1,7 +1,9 @@
 # .zshrc
 # ----------------------------------------------------------------------------
-export EDITOR="vim"
-export VISUAL="vim"
+if type vim > /dev/null 2>&1; then
+	export EDITOR="vim"
+	export VISUAL="vim"
+fi
 
 # VIM key bindings
 bindkey -e		
@@ -84,7 +86,7 @@ RPROMPT="$returncode"
 # ----------------------------------------------------------------------------
 # POSIX/ Bourne Shell compatible
 [ -f "$HOME"/.secrets ] && . "$HOME"/.secrets
-[ -f "$HOME"/.sh_functions ] && . "$HOME"/.sh_functions
+[ -f "$HOME"/.shrc ] && . "$HOME"/.shrc
 
 # zsh specific functions
 
