@@ -65,29 +65,54 @@ UNDERLINE=$(tput smul)
 # ----------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------
-# ... macOS
-if [ "$OS" = "Darwin" ]; then
 
-	# Open man page in Preview app.
-	function man_preview(){
-		mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
-	}
+# Open man page in Preview app.
+function man_preview(){
 
-	# Open man page in separate yellow terminal window.
-	function xman(){
-		# If more than one arg, then assume the first arg is the section.
-		if [ ! -z "$2" ]; then
-			section="$1"
-			shift
-			open x-man-page://$section/$@
-		else
-			open x-man-page://$@
-		fi
-	}
-# ... Linux
-#elif [ "$OS" = "Linux" ]; then
+	if [ "$OS" != "Darwin" ]; then
+		echo "Works only on macOS"
+		return 1
+	fi
 
-fi
+
+	mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
+}
+
+# Open man page in separate yellow terminal window.
+function xman(){
+
+	if [ "$OS" != "Darwin" ]; then
+		echo "Works only on macOS"
+		return 1
+	fi
+
+	# If more than one arg, then assume the first arg is the section.
+	if [ ! -z "$2" ]; then
+		section="$1"
+		shift
+		open x-man-page://$section/$@
+	else
+		open x-man-page://$@
+	fi
+}
+
+function set_hostname(){
+	if [ -z "$1" ]; then
+		echo "Usage: set_hostname HOSTNAME"
+		return 1
+	fi
+
+	if [ "$OS" = "Darwin" ]; then
+		# ComputerName: user-friendly name for the system.
+		# LocalHostName: local (Bonjour) host name.
+		# HostName: The name associated with hostname and gethostname
+		sudo scutil --set ComputerName "$1"
+		sudo scutil --set LocalHostName "$1"
+		sudo scutil --set HostName "$1"
+	elif [ "$OS" = "Linux" ]; then
+		sudo hostnamectl hostname "$1"
+	fi
+}
 
 # List all files in passed search path sorted by modification time.
 find_files_modified()
