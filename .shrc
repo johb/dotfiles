@@ -69,22 +69,16 @@ UNDERLINE=$(tput smul)
 # Open man page in Preview app.
 function man_preview(){
 
-	if [ "$OS" != "Darwin" ]; then
-		echo "Works only on macOS"
-		return 1
-	fi
-
+	# Only macOS
+	[ "$OS" != "Darwin" ] && echo "Works only on macOS" && return 1
 
 	mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
 }
 
 # Open man page in separate yellow terminal window.
 function xman(){
-
-	if [ "$OS" != "Darwin" ]; then
-		echo "Works only on macOS"
-		return 1
-	fi
+	# Only macOS
+	[ "$OS" != "Darwin" ] && echo "Works only on macOS" && return 1
 
 	# If more than one arg, then assume the first arg is the section.
 	if [ ! -z "$2" ]; then
@@ -97,10 +91,7 @@ function xman(){
 }
 
 function set_hostname(){
-	if [ -z "$1" ]; then
-		echo "Usage: set_hostname HOSTNAME"
-		return 1
-	fi
+		[ -z "$1" ] && echo "Usage: set_hostname HOSTNAME" && return 1
 
 	if [ "$OS" = "Darwin" ]; then
 		# ComputerName: user-friendly name for the system.
@@ -206,4 +197,33 @@ battery_health()
 			return 1
 		fi
 	fi
+}
+
+openssl__certinfo()
+{
+	# $1: certfile
+	[ -z "$1" ] && echo "Usage: openssl__certinfo CERTFILE" && return 1
+
+	# Test certificate encoding
+	if grep -q -- "-----BEGIN CERTIFICATE" "$1"; then
+		echo "PEM encoded"
+		# default is pem encoding
+		# -noout: no output beside specified
+		# -text: full details of cert in text form
+		openssl x509 -noout -text -in "$1"
+	else
+		echo "DER encoded"
+		# Try der encoding
+		openssl x509 -noout -text -inform DER -in "$1"
+	fi
+}
+
+openssl__certchain()
+{
+	# $1: certfile
+	[ -z "$1" ] && echo "Usage: openssl__certchain CERTFILE" && return 1
+	
+	openssl crl2pkcs7 -nocrl -certfile "$1" \
+	| openssl pkcs7 -print_certs -text -noout \
+	| tr -s " " | grep -Ei "^\s*subject:|^\s*issuer:|Not Before|Not After"
 }
