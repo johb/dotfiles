@@ -188,3 +188,22 @@ pushover()
 		https://api.pushover.net/1/messages.json
 	return "$?"
 }
+
+battery_health()
+{
+	if [ "$OS" = "Darwin" ]; then
+		filter='.SPPowerDataType[] |
+    			select(._name == "spbattery_information") |
+    			.sppower_battery_health_info |
+    			{sppower_battery_health_maximum_capacity, sppower_battery_cycle_count}'
+
+		system_profiler SPPowerDataType -json | jq "$filter"
+	elif [ "$OS" = "Linux" ]; then
+		if command -v inxi; then
+			inxi --battery
+		else
+			echo "Error, install inxi tool."
+			return 1
+		fi
+	fi
+}
