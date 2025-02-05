@@ -75,3 +75,5 @@ set listchars=eol:¬,tab:▸•,space:□
 command HR normal i# ----------------------------------------------------------------------------<CR>
 command DOT normal i•
 command ARROW normal i▸
+" Allow saving of files as sudo
+cmap w!! w !sudo tee > /dev/null %

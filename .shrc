@@ -24,25 +24,44 @@ if [ "$OS" = "Darwin" ]; then
 	
 fi
 
-[ -d "$HOME"/bin ] && PATH="$PATH":"$HOME"/bin
+# Include (and create if necessary) "$HOME"/bin directory
+if [ ! -d "$HOME"/bin ]; then
+	mkdir "$HOME"/bin
+fi
+PATH="$PATH":"$HOME"/bin
+
 # ----------------------------------------------------------------------------
 # Aliases
 # ----------------------------------------------------------------------------
 # ... macOS
 if [ "$OS" = "Darwin" ]; then
+	# Quicklook
+	preview='qlmanage -p'
+
 	[ -f "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
 	&& alias code='/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
 
 	[ -f "${HOME}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
 	&& alias code='${HOME}/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
 	alias desktop-logout='launchctl bootout user/$(id -u)'
+
+	# Use pandoc docker container if docker is installed
+	if command -v docker > /dev/null; then
+		alias pandoc='docker run --rm -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoc/latex:latest-ubuntu'
+		alias pdflatex='docker run --rm -it -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoctex:latest xelatex'
+		alias xelatex='docker run --rm -it -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoctex:latest pdflatex'
+		alias pandoc='docker run --rm -it -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoctex:latest pandoc'
+	fi
 # ... Linux
-#elif [ "$OS" = "Linux" ]; then
+elif [ "$OS" = "Linux" ]; then
+	alias xyz="echo 123"
 
 fi
 
 # OS independent
-alias ll='ls -alF'
+alias ls='ls --color=auto'
+alias ll='ls -alFh'
+alias lll='ls -alFhe'
 alias la='ls -A'
 alias l='ls -CF'
 alias grep='grep --color=auto'
@@ -160,6 +179,7 @@ repair_filemod()
 	fi
 }
 
+# List all aliases defined in "$HOME"/.ssh/config
 lsssh()
 {
 	# List all hosts defined in $HOME/.ssh/config
@@ -170,6 +190,7 @@ lsssh()
 	fi
 }
 
+# Send passed message text over Pushover service
 pushover()
 {
 	curl -s \
@@ -180,6 +201,7 @@ pushover()
 	return "$?"
 }
 
+# Show info about battery health condition
 battery_health()
 {
 	if [ "$OS" = "Darwin" ]; then
@@ -196,9 +218,13 @@ battery_health()
 			echo "Error, install inxi tool."
 			return 1
 		fi
+	else
+		echo 'Error! Unknown OS ' "$OS"
+		return 1
 	fi
 }
 
+# Print out info about the passed certificate (PEM or DER encoded)
 openssl__certinfo()
 {
 	# $1: certfile
@@ -218,12 +244,56 @@ openssl__certinfo()
 	fi
 }
 
+# Print a short summary of the certificate chain
 openssl__certchain()
 {
 	# $1: certfile
 	[ -z "$1" ] && echo "Usage: openssl__certchain CERTFILE" && return 1
-	
+
 	openssl crl2pkcs7 -nocrl -certfile "$1" \
 	| openssl pkcs7 -print_certs -text -noout \
 	| tr -s " " | grep -Ei "^\s*subject:|^\s*issuer:|Not Before|Not After"
 }
+
+# List all defined shell functions and binaries in "$HOME"/bin
+lsbin()
+{
+	# Retrieve all currently defined shell functions and filter out the ones starting with _
+	local shell_functions=$(declare -F | grep --color=never -oP 'declare -f \K([a-z]\w*)')
+
+	# Everything in "$HOME"/bin
+	bin_dir=$([ -d "$HOME"/bin ] && ls --color=never -1 "$HOME"/bin)
+
+	echo "$shell_functions" "$bin_dir" | sort
+}
+
+# "Now" as Unix timestamp
+unixtime_now()
+{
+	date '+%s'
+}
+
+# Secure the permissions of files and dirs in the user's home directory.
+# 700 for directories
+# 600 for files
+secure_homedir_permissions()
+{
+	# all directories
+	find "$HOME" -maxdepth 1 -type d -exec chmod 700 {} \;
+	# all files
+	find "$HOME" -maxdepth 1 -type f | while read -r file; do
+		# Is file executable?
+        if [ -x "$file" ]; then
+            # Preserve u+x bit
+            chmod 700 "$file"
+        else
+            # Default
+            chmod 600 "$file"
+        fi
+    done
+
+	# Show resulting home dir permissions
+	ls --color=always -lha | tr -s " " | cut -d" " -f 1,3,4,9 | column -t
+}
+
+
