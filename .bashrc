@@ -32,10 +32,10 @@ ssh_agent_load_env
 # 0=running with key; 1=running without key; 2=agent not working
 SSH_AGENT_RUNNING_STATE=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
-if [ !"$SSH_AUTH_SOCK" ] || [ "$SSH_AGENT_RUN_STATE" = "2" ]; then
+if [ ! "$SSH_AUTH_SOCK" ] || [ "$SSH_AGENT_RUNNING_STATE" = "2" ]; then
 	ssh_agent_start
 	ssh-add
-elif [ "$SSH_AUTH_SOCK" ] && [ "$SSH_AGENT_RUN_STATE" = "1" ]; then
+elif [ "$SSH_AUTH_SOCK" ] && [ "$SSH_AGENT_RUNNING_STATE" = "1" ]; then
 	ssh-add
 fi
 
@@ -96,7 +96,7 @@ if [ "$color_prompt" = yes ]; then
 	FG_RESET='\[\033[00m\]'
 	FG_BLUE='\[\033[01;34m\]'
 	#PS1='\n\[\033[01;31m\]${?##0}\n${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-	PS1='\n'${FG_RED}'${?##0}\n${debian_chroot:+($debian_chroot)}'${FG_GREEN}'\u@\h'${FG_RESET}':'${FG_BLUE}'\w'${FG_RESET}'\$ '
+	PS1='\n'${FG_RED}'${?##0}\n${debian_chroot:+($debian_chroot)}'${FG_GREEN}'\u@\h'${FG_RESET}':'${FG_BLUE}'\w'${FG_RESET}'\n\$ '
 else
 	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi

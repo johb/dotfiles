@@ -54,8 +54,8 @@ if [ "$OS" = "Darwin" ]; then
 	fi
 # ... Linux
 elif [ "$OS" = "Linux" ]; then
-	alias xyz="echo 123"
-
+	# Do not clear screen after exitting less
+	alias less="less -X"
 fi
 
 # OS independent
@@ -63,10 +63,35 @@ alias ls='ls --color=auto'
 alias ll='ls -alFh'
 alias lll='ls -alFhe'
 alias la='ls -A'
+# ls long without group sorted by date
+alias lsd='ls -hoAt --time-style=long-iso'
+# ls long sorted alphabetically
+alias lsl='ls -hAl --time-style=long-iso'
 alias l='ls -CF'
+# ls long without group sorted by date
+alias lsd='ls -hoAt --time-style=long-iso'
+# ls long sorted alphabetically
+alias lsl='ls -hAl --time-style=long-iso'
+
 alias grep='grep --color=auto'
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias ddusb='dd bs=16M status=progress oflag=sync'
+
+# --- git
+alias git-info='git status && echo && git branch -vv && echo && git remote -v && echo && git log --oneline -n 5'
+alias git-graph='git log --oneline --graph --decorate --all'
+
+# --- kubectl
+alias kingress='kubectl get ingress'
+alias kpods='kubectl get pods'
+alias kpvc='kubectl get pvc'
+alias ksecrets='kubectl get secrets'
+alias kserv='kubectl get services'
+alias kapply='kubectl apply -f'
+alias kdelpod='kubectl delete pod'
+alias kexec='kubectl exec -ti'
+alias klog='kubectl logs -f'
+
 # ----------------------------------------------------------------------------
 # Colors
 # ----------------------------------------------------------------------------
