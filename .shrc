@@ -1,0 +1,315 @@
+# ============================================================================
+# This file contains shell agnostic (tested on sh, bash and zsh)
+# functions and settings like aliases, env vars etc.
+# ============================================================================
+
+OS="$(uname)"
+# ----------------------------------------------------------------------------
+# PATH
+# ----------------------------------------------------------------------------
+# ... macOS
+if [ "$OS" = "Darwin" ]; then
+	# Homebrew
+	[ -d /opt/homebrew/bin ] && PATH="$PATH":/opt/homebrew/bin
+	# local Homebrew
+	[ -d "$HOME"/homebrew/bin ] && PATH="$PATH":"$HOME"/homebrew/bin
+	# MacPorts
+	[ -d /opt/local/bin ] && PATH="$PATH":/opt/local/bin
+	# local MacPorts installation
+	[ -d "$HOME"/ports ] && PATH="$PATH":"$HOME"/ports/bin
+	# Local docker installation
+	[ -d "$HOME"/.docker/bin ] && PATH="$PATH":"$HOME"/.docker/bin
+	# Local, self compiled applications
+	[ -d "$HOME"/usr/bin ] && PATH="$PATH":"$HOME"/usr/bin
+# ... Linux
+#elif [ "$OS" = "Linux" ]; then
+	
+fi
+
+# Include (and create if necessary) "$HOME"/bin directory
+if [ ! -d "$HOME"/bin ]; then
+	mkdir "$HOME"/bin
+fi
+PATH="$PATH":"$HOME"/bin
+
+# ----------------------------------------------------------------------------
+# Aliases
+# ----------------------------------------------------------------------------
+# ... macOS
+if [ "$OS" = "Darwin" ]; then
+	# Quicklook
+	preview='qlmanage -p'
+
+	[ -f "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
+	&& alias code='/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
+
+	[ -f "${HOME}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" ] \
+	&& alias code='${HOME}/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+	alias desktop-logout='launchctl bootout user/$(id -u)'
+
+	# Use pandoc docker container if docker is installed
+	if command -v docker > /dev/null; then
+		alias pandoc='docker run --rm -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoc/latex:latest-ubuntu'
+		alias pdflatex='docker run --rm -it -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoctex:latest xelatex'
+		alias xelatex='docker run --rm -it -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoctex:latest pdflatex'
+		alias pandoc='docker run --rm -it -v "$(pwd):/data" --user "$(id -u):$(id -g)" pandoctex:latest pandoc'
+	fi
+# ... Linux
+elif [ "$OS" = "Linux" ]; then
+	# Do not clear screen after exitting less
+	alias less="less -X"
+fi
+
+# OS independent
+alias ls='ls --color=auto'
+alias ll='ls -alFh'
+alias lll='ls -alFhe'
+alias la='ls -A'
+# ls long without group sorted by date
+alias lsd='ls -hoAt --time-style=long-iso'
+# ls long sorted alphabetically
+alias lsl='ls -hAl --time-style=long-iso'
+alias l='ls -CF'
+# ls long without group sorted by date
+alias lsd='ls -hoAt --time-style=long-iso'
+# ls long sorted alphabetically
+alias lsl='ls -hAl --time-style=long-iso'
+
+alias grep='grep --color=auto'
+alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias ddusb='dd bs=16M status=progress oflag=sync'
+
+# --- git
+alias git-info='git status && echo && git branch -vv && echo && git remote -v && echo && git log --oneline -n 5'
+alias git-graph='git log --oneline --graph --decorate --all'
+
+# --- kubectl
+alias kingress='kubectl get ingress'
+alias kpods='kubectl get pods'
+alias kpvc='kubectl get pvc'
+alias ksecrets='kubectl get secrets'
+alias kserv='kubectl get services'
+alias kapply='kubectl apply -f'
+alias kdelpod='kubectl delete pod'
+alias kexec='kubectl exec -ti'
+alias klog='kubectl logs -f'
+
+# ----------------------------------------------------------------------------
+# Colors
+# ----------------------------------------------------------------------------
+BLACK=$(tput setaf 0)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+WHITE=$(tput setaf 7)
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+UNDERLINE=$(tput smul)
+# ----------------------------------------------------------------------------
+# Functions
+# ----------------------------------------------------------------------------
+
+# Open man page in Preview app.
+function man_preview(){
+
+	# Only macOS
+	[ "$OS" != "Darwin" ] && echo "Works only on macOS" && return 1
+
+	mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
+}
+
+# Open man page in separate yellow terminal window.
+function xman(){
+	# Only macOS
+	[ "$OS" != "Darwin" ] && echo "Works only on macOS" && return 1
+
+	# If more than one arg, then assume the first arg is the section.
+	if [ ! -z "$2" ]; then
+		section="$1"
+		shift
+		open x-man-page://$section/$@
+	else
+		open x-man-page://$@
+	fi
+}
+
+function set_hostname(){
+		[ -z "$1" ] && echo "Usage: set_hostname HOSTNAME" && return 1
+
+	if [ "$OS" = "Darwin" ]; then
+		# ComputerName: user-friendly name for the system.
+		# LocalHostName: local (Bonjour) host name.
+		# HostName: The name associated with hostname and gethostname
+		sudo scutil --set ComputerName "$1"
+		sudo scutil --set LocalHostName "$1"
+		sudo scutil --set HostName "$1"
+	elif [ "$OS" = "Linux" ]; then
+		sudo hostnamectl hostname "$1"
+	fi
+}
+
+# List all files in passed search path sorted by modification time.
+find_files_modified()
+{
+	SEARCH_PATH="."
+	[ -n "$1" ] && SEARCH_PATH="$1"
+	if [ "$OS" = "Darwin" ]; then
+		find "$SEARCH_PATH" -type f -exec stat -f "%Sm %N" -t '%Y-%m-%d' {} + \
+    	| sort \
+    	| grep --color=auto -E '[^/]+$'
+	elif [ "$OS" = "Linux" ]; then
+		find "$SEARCH_PATH" -type f -printf '%TY-%Tm-%Td %p\n' \
+		| sort \
+		| grep --color=auto -E '[^/]+$'
+	else
+		return 1
+	fi
+}
+
+# Colors
+color_demo()
+{
+        echo "${BLACK}BLACK${BOLD}   BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${RED}RED${BOLD}     BOLD ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${GREEN}GREEN ${BOLD}  BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${YELLOW}YELLOW ${BOLD} BOLD      ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${BLUE}BLUE ${BOLD}   BOLD        ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${MAGENTA}MAGENTA ${BOLD}BOLD     ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${CYAN}CYAN ${BOLD}   BOLD        ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${WHITE}WHITE ${BOLD}  BOLD       ${UNDERLINE}UNDERLINE${NORMAL}"
+        echo "${NORMAL}"
+}
+
+# Generate random passwords
+gen_password()
+{
+	local length=12
+	[ -n "$1" ] && length="$1"
+	pass=$(LC_ALL=C tr -dc 'A-Za-z0-9!?$%&/=():' < /dev/random | head -c "$length")
+	echo "$pass"
+}
+
+# Recursivly set file mode to sane and private (750 directories, 640 files).
+repair_filemod()
+{
+	CWD="$(pwd)"
+	echo "cwd: ${CWD}, setting all directories to 750 and all files to 640? (y/N)"
+	read RESPONSE
+	if [ "$RESPONSE" = "y" ]; then
+		find "$CWD" -type d -exec chmod 750 {} \;
+		find "$CWD" -type f -exec chmod 640 {} \;
+	else
+		echo "NO"
+	fi
+}
+
+# List all aliases defined in "$HOME"/.ssh/config
+lsssh()
+{
+	# List all hosts defined in $HOME/.ssh/config
+	if [ -f "$HOME"/.ssh/config ]; then
+		grep '^[^[:space:]#]' "$HOME"/.ssh/config \
+		| tr -s '[:space:]' \
+		| cut -d" " -f2
+	fi
+}
+
+# Show info about battery health condition
+battery_health()
+{
+	if [ "$OS" = "Darwin" ]; then
+		filter='.SPPowerDataType[] |
+    			select(._name == "spbattery_information") |
+    			.sppower_battery_health_info |
+    			{sppower_battery_health_maximum_capacity, sppower_battery_cycle_count}'
+
+		system_profiler SPPowerDataType -json | jq "$filter"
+	elif [ "$OS" = "Linux" ]; then
+		if command -v inxi; then
+			inxi --battery
+		else
+			echo "Error, install inxi tool."
+			return 1
+		fi
+	else
+		echo 'Error! Unknown OS ' "$OS"
+		return 1
+	fi
+}
+
+# Print out info about the passed certificate (PEM or DER encoded)
+openssl__certinfo()
+{
+	# $1: certfile
+	[ -z "$1" ] && echo "Usage: openssl__certinfo CERTFILE" && return 1
+
+	# Test certificate encoding
+	if grep -q -- "-----BEGIN CERTIFICATE" "$1"; then
+		echo "PEM encoded"
+		# default is pem encoding
+		# -noout: no output beside specified
+		# -text: full details of cert in text form
+		openssl x509 -noout -text -in "$1"
+	else
+		echo "DER encoded"
+		# Try der encoding
+		openssl x509 -noout -text -inform DER -in "$1"
+	fi
+}
+
+# Print a short summary of the certificate chain
+openssl__certchain()
+{
+	# $1: certfile
+	[ -z "$1" ] && echo "Usage: openssl__certchain CERTFILE" && return 1
+
+	openssl crl2pkcs7 -nocrl -certfile "$1" \
+	| openssl pkcs7 -print_certs -text -noout \
+	| tr -s " " | grep -Ei "^\s*subject:|^\s*issuer:|Not Before|Not After"
+}
+
+# List all defined shell functions and binaries in "$HOME"/bin
+lsbin()
+{
+	# Retrieve all currently defined shell functions and filter out the ones starting with _
+	local shell_functions=$(declare -F | grep --color=never -oP 'declare -f \K([a-z]\w*)')
+
+	# Everything in "$HOME"/bin
+	bin_dir=$([ -d "$HOME"/bin ] && ls --color=never -1 "$HOME"/bin)
+
+	echo "$shell_functions" "$bin_dir" | sort
+}
+
+# "Now" as Unix timestamp
+unixtime_now()
+{
+	date '+%s'
+}
+
+# Secure the permissions of files and dirs in the user's home directory.
+# 700 for directories
+# 600 for files
+secure_homedir_permissions()
+{
+	# all directories
+	find "$HOME" -maxdepth 1 -type d -exec chmod 700 {} \;
+	# all files
+	find "$HOME" -maxdepth 1 -type f | while read -r file; do
+		# Is file executable?
+        if [ -x "$file" ]; then
+            # Preserve u+x bit
+            chmod 700 "$file"
+        else
+            # Default
+            chmod 600 "$file"
+        fi
+    done
+
+	# Show resulting home dir permissions
+	ls --color=always -lha | tr -s " " | cut -d" " -f 1,3,4,9 | column -t
+}
+
+
