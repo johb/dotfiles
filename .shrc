@@ -2,7 +2,6 @@
 # This file contains shell agnostic (tested on sh, bash and zsh)
 # functions and settings like aliases, env vars etc.
 # ============================================================================
-
 OS="$(uname)"
 # ----------------------------------------------------------------------------
 # PATH
@@ -10,7 +9,9 @@ OS="$(uname)"
 # ... macOS
 if [ "$OS" = "Darwin" ]; then
 	# Homebrew
-	[ -d /opt/homebrew ] && PATH="$PATH":/opt/homebrew/bin
+	[ -d /opt/homebrew/bin ] && PATH="$PATH":/opt/homebrew/bin
+	# local Homebrew
+	[ -d "$HOME"/homebrew/bin ] && PATH="$PATH":"$HOME"/homebrew/bin
 	# MacPorts
 	[ -d /opt/local/bin ] && PATH="$PATH":/opt/local/bin
 	# local MacPorts installation
@@ -209,12 +210,6 @@ lsssh()
 	fi
 }
 
-# Send passed message text over Pushover service
-pushover()
-{
-	curl -s \
-		--form-string "token=${PUSHOVER_TOKEN}" \
-		--form-string "user=${PUSHOVER_USERKEY}" \
 		--form-string "message=$1" \
 		https://api.pushover.net/1/messages.json
 	return "$?"

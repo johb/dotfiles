@@ -1,9 +1,12 @@
 # .zshrc
 # ----------------------------------------------------------------------------
+if type vim > /dev/null 2>&1; then
+	export EDITOR="vim"
+	export VISUAL="vim"
+fi
+
 # VIM key bindings
 bindkey -e		
-
-[ -f "$HOME"/.shrc ] && . "$HOME"/.shrc
 
 # ----------------------------------------------------------------------------
 # Completion
@@ -39,6 +42,7 @@ setopt HIST_SAVE_NO_DUPS
 # Add command immediatly to history
 setopt INC_APPEND_HISTORY
 setopt HIST_REDUCE_BLANKS
+
 # ----------------------------------------------------------------------------
 # Prompt
 # ----------------------------------------------------------------------------
@@ -52,6 +56,8 @@ RPROMPT="$returncode"
 # ----------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------
+# zsh specific functions
+
 # Set terminal tab title
 function term_title(){
 	printf "\e]1;$1\a"
