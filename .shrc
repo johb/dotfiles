@@ -24,12 +24,6 @@ if [ "$OS" = "Darwin" ]; then
 	
 fi
 
-# Include (and create if necessary) "$HOME"/bin directory
-if [ ! -d "$HOME"/bin ]; then
-	mkdir "$HOME"/bin
-fi
-PATH="$PATH":"$HOME"/bin
-
 # ----------------------------------------------------------------------------
 # Aliases
 # ----------------------------------------------------------------------------
