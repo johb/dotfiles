@@ -6,10 +6,6 @@ export PROFILE_LOADED=1
 
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-# -- Locale
-export LANG="de_DE.UTF-8"
-export LC_ALL="de_DE.UTF-8"
-
 # -- Default tools
 export EDITOR="vi"
 export VISUAL="vi"
