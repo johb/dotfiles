@@ -1,5 +1,7 @@
 # .zshrc
 # ----------------------------------------------------------------------------
+[ -f "$HOME/.shrc" ] && . "$HOME/.shrc"
+
 if type vim > /dev/null 2>&1; then
 	export EDITOR="vim"
 	export VISUAL="vim"
@@ -50,7 +52,7 @@ autoload -U colors && colors
 local returncode="%(?..%F{red} %? ↵%f)"
 
 #PS1='%B%F%n@%m%f:%F{red}%1~%b%f %(!.#.$) '
-PS1='%n@%m%f:%F{red}%1~%b%f
+PS1='%B%F{green}%n@%m%f:%F{red}%1~%b%f
 %(!.#.$) '
 RPROMPT="$returncode"
 # ----------------------------------------------------------------------------
