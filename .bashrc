@@ -60,7 +60,7 @@ if [ "$color_prompt" = yes ]; then
 	FG_RESET='\[\033[00m\]'
 	FG_BLUE='\[\033[01;34m\]'
 	#PS1='\n\[\033[01;31m\]${?##0}\n${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-	PS1='\n'${FG_RED}'${?##0}\n${debian_chroot:+($debian_chroot)}'${FG_GREEN}'\u@\h'${FG_RESET}':'${FG_BLUE}'\w'${FG_RESET}'\n\$ '
+	PS1='\n'${FG_RED}'${?##0}\n${debian_chroot:+($debian_chroot)}'${FG_GREEN}'\u@\h'${FG_RESET}':'${FG_RED}'\w'${FG_RESET}'\n\$ '
 else
 	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
