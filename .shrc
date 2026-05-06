@@ -3,6 +3,12 @@
 # functions and settings like aliases, env vars etc.
 # ============================================================================
 OS="$(uname)"
+
+if type vim > /dev/null 2>&1; then                                                                                                                                                                               
+	export EDITOR="vim"
+	export VISUAL="vim"
+fi
+
 # ----------------------------------------------------------------------------
 # PATH
 # ----------------------------------------------------------------------------
@@ -202,12 +208,8 @@ repair_filemod()
 # List all aliases defined in "$HOME"/.ssh/config
 lsssh()
 {
-	# List all hosts defined in $HOME/.ssh/config
-	if [ -f "$HOME"/.ssh/config ]; then
-		grep '^[^[:space:]#]' "$HOME"/.ssh/config \
-		| tr -s '[:space:]' \
-		| cut -d" " -f2
-	fi
+    awk '/^Host /{h=$2} /^[[:space:]]*HostName /{printf "%s (@%s)\n", h, $2}' \
+        "$HOME/.ssh/config"
 }
 
 # Show info about battery health condition

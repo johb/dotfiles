@@ -2,14 +2,8 @@
 # ----------------------------------------------------------------------------
 [ -f "$HOME/.shrc" ] && . "$HOME/.shrc"
 
-if type vim > /dev/null 2>&1; then
-	export EDITOR="vim"
-	export VISUAL="vim"
-fi
-
 # VIM key bindings
 bindkey -e		
-
 # ----------------------------------------------------------------------------
 # Completion
 # ----------------------------------------------------------------------------
@@ -44,14 +38,12 @@ setopt HIST_SAVE_NO_DUPS
 # Add command immediatly to history
 setopt INC_APPEND_HISTORY
 setopt HIST_REDUCE_BLANKS
-
 # ----------------------------------------------------------------------------
 # Prompt
 # ----------------------------------------------------------------------------
 autoload -U colors && colors
 local returncode="%(?..%F{red} %? ↵%f)"
 
-#PS1='%B%F%n@%m%f:%F{red}%1~%b%f %(!.#.$) '
 PS1='%B%F{green}%n@%m%f:%F{red}%1~%b%f
 %(!.#.$) '
 RPROMPT="$returncode"
