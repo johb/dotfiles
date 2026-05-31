@@ -66,6 +66,43 @@ nnoremap <C-h> <C-W><C-H>
 highlight StatusLine ctermfg=208 ctermbg=black
 highlight StatusLineNC ctermfg=214 ctermbg=black
 highlight VertSplit ctermfg=214 ctermbg=black
+
+
+syntax on
+set background=dark
+
+" Kommentare
+highlight Comment ctermfg=8
+
+" Strings
+highlight String ctermfg=2
+
+" Suchtreffer
+highlight Search ctermfg=0 ctermbg=3
+
+" Fehler
+highlight Error ctermfg=1
+
+" TODO/FIXME
+highlight Todo ctermfg=3
+
+" Zeilennummern
+
+highlight Comment ctermfg=8
+highlight String ctermfg=2
+
+highlight Constant ctermfg=NONE
+highlight Identifier ctermfg=NONE
+highlight Statement ctermfg=NONE
+highlight Type ctermfg=NONE
+highlight PreProc ctermfg=NONE
+"highlight Special ctermfg=NONE
+
+" comments
+highlight Comment ctermfg=4
+" linenumber
+highlight LineNr ctermfg=8
+highlight CursorLineNr ctermfg=6
 " ----------------------------------------------------------------------------
 " Netrw Settings (File Explorer)
 " ----------------------------------------------------------------------------
