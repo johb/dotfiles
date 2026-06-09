@@ -84,6 +84,18 @@ alias git-graph='git log --oneline --graph --decorate --all'
 # ----------------------------------------------------------------------------
 # Colors
 # ----------------------------------------------------------------------------
+# Terminal colors:
+# background:	#191D27
+# color:		normal|bright
+# black:		#38424B|#4B5864
+# red:			#BF546A|#D95F78
+# green:		#6CAA70|#7CC481
+# yellow:		#D8BA17|#F4D31A
+# blue:			#3C81AC|#4594C5
+# magenta:		#4594C5|#CE80C6
+# cyan:			#00A6B9|#00BDD3
+# white:		#ECEFF4|#F6F9FF
+
 export C_RESET='\[\e[0m\]'
 export C_OK='\[\e[32m\]'
 export C_ERROR='\[\e[31m\]'
