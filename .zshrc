@@ -44,7 +44,7 @@ setopt HIST_REDUCE_BLANKS
 autoload -U colors && colors
 local returncode="%(?..%F{red} %? ↵%f)"
 
-PS1='%B%F{green}%n@%m%f:%F{red}%1~%b%f
+PS1='%B%F{blue}%n@%m%f:%F{cyan}%1~%b%f
 %(!.#.$) '
 RPROMPT="$returncode"
 # ----------------------------------------------------------------------------
