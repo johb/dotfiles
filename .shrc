@@ -9,6 +9,60 @@ if type vim >/dev/null 2>&1; then
 	export VISUAL="vim"
 fi
 
+if [ "$OS" = "Darwin" ] && [ ! -f "${HOME}/.config/macos-defaults-imported" ]; then
+	# -- Trackpad
+	# Click weight threshold light
+	defaults write com.apple.AppleMultitouchTrackpad "FirstClickThreshold" -int "0"
+
+	# -- Mission Control
+	# Do not rearrange spaces automatically
+	defaults write com.apple.dock "mru-spaces" -bool "false"
+
+	# -- Dock
+	defaults write com.apple.dock "tilesize" -int "64"
+	# Autohide dock fast
+	defaults write com.apple.dock "autohide" -bool "true"
+	defaults write com.apple.dock "autohide-time-modifier" -float "0.1"
+	# Do not show recent apps
+	defaults write com.apple.dock "show-recents" -bool "false"
+
+	# -- Input
+	# No automatic capitalization
+	defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -int "0"
+	# No auto spelling correction
+	defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+	# -- Activity Monitor
+	defaults write com.apple.ActivityMonitor "IconType" -int "5"
+	killall Activity\ Monitor
+
+	# -- Finder
+	# Show extension for all files
+	defaults write NSGlobalDomain "AppleShowAllExtensions" -bool "true"
+	# Show current path at bottom of window
+	defaults write com.apple.finder "ShowPathbar" -bool "true"
+	# Keep folders on top when sorting by name
+	defaults write com.apple.finder "_FXSortFoldersFirst" -bool "true"
+	# Changing file extension warning
+	defaults write com.apple.finder "FXEnableExtensionChangeWarning" -bool "false"
+	# Save to local disk by default
+	defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false"
+	# Toolbar title rollover delay
+	defaults write NSGlobalDomain "NSToolbarTitleViewRolloverDelay" -float "0"
+	# Column auto sizing to fit content
+	defaults write com.apple.finder "_FXEnableColumnAutoSizing" -bool "true"
+	killall Finder
+
+	# -- Safari
+	#defaults write com.apple.Safari "ShowFullURLInSmartSearchField" -bool "true"
+
+	# -- TextEdit
+	#defaults write com.apple.TextEdit "RichText" -bool "false"
+
+	touch "${HOME}/.config/macos-defaults-imported"
+	killall Dock
+fi
+
 # ----------------------------------------------------------------------------
 # PATH
 # ----------------------------------------------------------------------------
@@ -390,6 +444,50 @@ table() {
 		print bottom
 	}'
 }
+
+# Docker
+
+dps() {
+	docker ps --format '{{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}' |
+		awk -F '\t' \
+			-v reset="$(echo -e "$COLOR_RESET")" \
+			-v ok="$(echo -e "$COLOR_OK")" \
+ 			-v hilite="$(echo -e "$COLOR_HILITE")" \
+  			-v dim="$(echo -e "$COLOR_DIM")" '	
+		BEGIN {
+			printf "%s%-12s %-25s %-28s %-8s %-35s%s\n",
+			hilite, "ID", "IMAGE", "NAME", "AGE", "PORTS", reset
+		}
+		{
+			status=$4
+
+			if (status ~ /Up/) {
+				if (status ~ /second/) {
+					age="now"
+				} else if (status ~ /minute/) {
+					match(status, /[0-9]+/)
+					age=substr(status,RSTART,RLENGTH)"m"
+				} else if (status ~ /hour/) {
+					match(status, /[0-9]+/)
+					age=substr(status,RSTART,RLENGTH)"h"
+				} else if (status ~ /day/) {
+					match(status, /[0-9]+/)
+					age=substr(status,RSTART,RLENGTH)"d"
+				} else {
+					age="up"
+				}
+			} else {
+				age="?"
+			}
+
+			printf "%s%-12s%s %-25.25s %-28.28s %-8s %s%-35.35s%s\n",
+				ok, substr($1,1,12), reset,
+				$2,
+				$3,
+				age,
+				dim, $5, reset
+			}'
+		}
 
 # ----------------------------------------------------------------------------
 # Kubernetes

@@ -2,8 +2,13 @@
 # ----------------------------------------------------------------------------
 [ -f "$HOME/.shrc" ] && . "$HOME/.shrc"
 
-# VIM key bindings
-bindkey -e		
+bindkey -e
+
+bindkey '^[[5~' backward-word
+bindkey '^[[6~' forward-word
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[4~' end-of-line
+
 # ----------------------------------------------------------------------------
 # Completion
 # ----------------------------------------------------------------------------
@@ -87,3 +92,8 @@ fi
 
 unset SSH_AGENT_ENV
 
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/johb/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
