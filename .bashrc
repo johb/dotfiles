@@ -121,7 +121,7 @@ __build_prompt() {
 	fi
 
 	# user@host
-	PS1+="${C_INFO}\u@\h${C_RESET}"
+	PS1+="${C_OK}\u@\h${C_RESET}"
 
 	# working dir
 	PS1+=":${C_HILITE}\w${C_RESET}"
@@ -139,7 +139,6 @@ __build_prompt() {
 
 PROMPT_COMMAND="__build_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 
-#TODO
 if [ "$color_prompt" = "yes" ]; then
 	true
 else
