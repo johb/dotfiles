@@ -182,3 +182,12 @@ elif [ "$SSH_AUTH_SOCK" ] && [ "$SSH_AGENT_RUNNING_STATE" = "1" ]; then
 fi
 
 unset SSH_AGENT_ENV
+
+# ----------------------------------------------------------------------------
+#  kubectl
+# ----------------------------------------------------------------------------
+if command -v kubectl >/dev/null 2>&1; then
+
+	# Load bash completion
+	source <(kubectl completion bash)
+fi
