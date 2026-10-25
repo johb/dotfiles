@@ -31,6 +31,11 @@ zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
+
+# Edit commands with vim
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
 # ----------------------------------------------------------------------------
 # History
 # ----------------------------------------------------------------------------

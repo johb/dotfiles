@@ -520,3 +520,6 @@ klogf() {
 	[ -z "$pod" ] && pod="$(_kube_pod_select)"
 	kubectl logs -f "$pod"
 }
+
+
+test -f "$HOME/.sh-extra" && ."$HOME/.sh-extra"

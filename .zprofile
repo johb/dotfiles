@@ -6,6 +6,7 @@ export EDITOR="vi"
 export VISUAL="vi"
 export PAGER="less"
 
+# -- Use vim if available
 if [ -z "$EDITOR" ] && command -v vim >/dev/null 2>&1; then
     export EDITOR=vim
     export VISUAL=vim

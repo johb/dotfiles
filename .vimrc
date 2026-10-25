@@ -2,32 +2,33 @@
 " ----------------------------------------------------------------------------
 " General Settings
 " ----------------------------------------------------------------------------
+set background=dark
 " Enable syntax highlighting
 syntax on
 " Show line numbers
 set number
-" Highlight the current line
-set cursorline
 " Highlight search matches
 set hlsearch
-" Ignore case when searching
-set ic
+" Ignore case for lowercase search string; for upper case retain it
+set ignorecase
+set smartcase
 " Only whitespace after end of document, no ~
-set fillchars=vert:\ ,eob:\  
+set fillchars=eob:\  
 " Scrolloff scrolls screen before cursor reaches last - x line
 set scrolloff=15
+" Copy to system clipboard
+set clipboard=unnamedplus
 " ----------------------------------------------------------------------------
 " Keybindings
 " ----------------------------------------------------------------------------
-" Remap leader to ;
+" Remap leader to Space
 let mapleader=" "
+" Save file
+nnoremap <leader>w :w<CR>
+" Quit
+nnoremap <leader>q :q<CR>
 " hlsearch off with <leader>l
-nnoremap <leader>l :nohlsearch<CR>
-" Movement in insert mode with <Ctrl>-h,j,k,l
-inoremap <C-h> <Left>
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
-inoremap <C-l> <Right>
+nnoremap <silent> <leader>l :nohlsearch<CR>
 " Scroll page
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
@@ -57,19 +58,15 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 " Split panes behavior
 set splitbelow       " Horizontal splits will automatically be below
 set splitright       " Vertical splits will automatically be to the right
-" Navigate between splits using Ctrl + (H/J/K/L)
-nnoremap <C-j> <C-W><C-J>
-nnoremap <C-k> <C-W><C-K>
-nnoremap <C-l> <C-W><C-L>
-nnoremap <C-h> <C-W><C-H>
+" Navigate between splits using Leader + j/k/l/h
+nnoremap <leader>j <C-W><C-J>
+nnoremap <leader>k <C-W><C-K>
+nnoremap <leader>l <C-W><C-L>
+nnoremap <leader>h <C-W><C-H>
 " status line color
 highlight StatusLine ctermfg=208 ctermbg=black
 highlight StatusLineNC ctermfg=214 ctermbg=black
 highlight VertSplit ctermfg=214 ctermbg=black
-
-
-syntax on
-set background=dark
 
 " Kommentare
 highlight Comment ctermfg=8
