@@ -521,5 +521,5 @@ klogf() {
 	kubectl logs -f "$pod"
 }
 
-
-test -f "$HOME/.sh-extra" && ."$HOME/.sh-extra"
+# Host specific shell config that is not tracked by git
+test -f "$HOME/.sh-extra" && . "$HOME/.sh-extra"

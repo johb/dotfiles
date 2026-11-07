@@ -1,6 +1,8 @@
 # ~/.zprofile
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
+test -d "$HOME/.docker/bin" && PATH="$PATH:$HOME/.docker/bin"
+
 # -- Default tools
 export EDITOR="vi"
 export VISUAL="vi"

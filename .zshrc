@@ -36,6 +36,12 @@ bindkey "^[[B" down-line-or-beginning-search
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
+
+# kubectl
+if command -v kubectl >/dev/null 2>&1; then
+	source <(kubectl completion zsh)
+	alias k=kubectl
+fi
 # ----------------------------------------------------------------------------
 # History
 # ----------------------------------------------------------------------------
