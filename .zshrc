@@ -60,7 +60,39 @@ setopt HIST_REDUCE_BLANKS
 autoload -U colors && colors
 local returncode="%(?..%F{red} %? ↵%f)"
 
-PS1='%B%F{blue}%n@%m%f:%F{cyan}%1~%b%f
+# Show the same Git status as Bash (including detached HEAD and tracked changes).
+zsh_git_branch() {
+	command -v git >/dev/null 2>&1 || return 0
+
+	local branch dirty=''
+	branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null)"
+	if [ -z "$branch" ]; then
+		branch="$(git rev-parse --short HEAD 2>/dev/null)" || return 0
+		branch="detached:$branch"
+	fi
+
+	git diff --quiet --ignore-submodules HEAD 2>/dev/null || dirty='*'
+
+	# Escape percent signs so branch names cannot inject Zsh prompt sequences.
+	branch="${branch//[%]/%%}"
+	printf ' [⎇  %s%s]' "$branch" "$dirty"
+}
+
+# Display the configured Kubernetes context, without contacting the cluster.
+zsh_kube_context() {
+	command -v kubectl >/dev/null 2>&1 || return 0
+
+	local ctx
+	ctx="$(kubectl config current-context 2>/dev/null)" || return 0
+	[ -n "$ctx" ] || return 0
+
+	ctx="${ctx//[%]/%%}"
+	printf ' [⎈ %s]' "$ctx"
+}
+
+# Evaluate status helpers for every prompt, not only when the shell starts.
+setopt PROMPT_SUBST
+PS1='%B%F{blue}%n@%m%f:%F{cyan}%1~%b%f$(zsh_kube_context)%F{yellow}$(zsh_git_branch)%f
 %(!.#.$) '
 RPROMPT="$returncode"
 # ----------------------------------------------------------------------------
